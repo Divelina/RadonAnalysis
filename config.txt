@@ -1,0 +1,50 @@
+input_data separate #Option is separate or coupled, default is separate
+save_data y #(y or n) default is n = no, folders is output_files/coupled_data
+plots original averaged_time value_value ratio_ref_activity ratio_cmp_activity #in folder plots, see below for options
+ratio_fit parabolic #default is parabolic (ax^2 + b) other option is exponential (aexp(bx))
+save_plots y    #(y or n) default is n = no, folders is plots
+
+compared_value activity         #default is activity
+compared_value_unit Bq/m3       #default is relative unit
+
+# All params below are necessary only if separate detector files are used
+value_multipliers 1000.0 1.0 1.0 1.0 # DOUBLE PRECISION, default is 1.0 1.0 1.0 1.0 - multipliers for ref_value ref_value_unc_mult comp_value comp_value_unc
+value_thresholds 300 10000 300 10000 # default is 0 0 1E9 1E9 - ref_min, ref_max, cmp_min, cmp_max, Applied on averages in intervals
+
+custom_intervals y #(y or n) default is n = no, file in folder input_files/intervals.txt
+
+# The parameters below are not necessary when custom intervals are used
+start_datetime 06/09/2021 07:52  #default is referent file start, format month/day/full_year hours:min in 24-hour format
+end_datetime 07/01/2021 18:00 #default is referent file end, format month/day/full_year hours:min in 24-hour format
+interval_min 300                 #REQUIRED, should be longer or equl to the shorter interval between the measurements
+clear_data zeros bgn #optional intervals with zeros or sharp jumps can be cleared, lines with no entry are cleared
+
+referent_detector alphaguard    #default is 'unknown'
+referent_file_datetime_format %m/%d/%Y %I:%M:%S %p    #required
+referent_datetime_index 0 #REQUIRED and indexes start at 0! if datetime is split, give all indexes separated with space
+referent_value_index 1 2	#first is REQUIRED and indexes start at 0!, second is optional - for uncertainty
+referent_file_separator tab     #REQUIRED
+referent_file_encoding	cp1252 #default is cp1252, for alphae, try UTF16
+referent_detector_background 281 12    #default is 0 0, multiplier not applied
+referent_interval_match weighted #REQUIRED inside is recommended for RadonEYE, weighted for detectors with equidistant and reliable readings
+referent_meas_duration 10 #default is 10, meas time in minutes
+referent_unc_type propagation #default is stdevav, others are stdev, propagation, max (of stdev_av or propagation) _background unc is always included)
+
+compared_detector RadonEye      #default is 'unknown'
+compared_file_datetime_format %Y-%m-%d %H:%M:%S   #REQUIRED
+compared_datetime_index 1 # REQUIRED and indexes start at 0!, if datetime is split, give all indexes separated with space
+compared_value_index 2 	#first is REQUIRED and indexes start at 0!, second is optional - for uncertainty
+compared_file_separator ,   #REQUIRED
+compared_file_encoding cp1252 #default is cp1252, for alphae, try UTF16
+compared_detector_background 0 0        #default is 0 0, multiplier not applied
+compared_interval_match inside #REQUIRED inside is recommended for RadonEYE, weighted for detectors with equidistant and reliable readings
+compared_meas_duration 10 #default is 10, meas time in minutes
+compared_unc_type stdevav #default is stdevav, others are stdev, propagation, max (of stdev_av or propagation) _background unc is always included)
+
+# jump cleared - explain criteria - now max - min > average
+# bgn cleared - value < bgn + 3* bgn_unc
+# multiplier is used to convert to Bq/m3
+# uncertainty is of average always
+# stdev uncertatinty is recommended since it does not include the detector uncertainty for each point
+# original averaged_time value_value ratio_ref_activity ratio_cmp_activity
+# clear_data zeros jumps bgn #
